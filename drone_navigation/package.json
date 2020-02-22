@@ -1,0 +1,17 @@
+{
+  "name": "drone_navigation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "compute_distance.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ar-drone": "git://github.com/felixge/node-ar-drone.git",
+    "ardrone-autonomy": "git://github.com/eschnou/ardrone-autonomy.git",
+    "haversine": "^1.1.1"
+  }
+}

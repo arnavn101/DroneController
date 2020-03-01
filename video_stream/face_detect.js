@@ -27,4 +27,4 @@ exports.execute_faceRecognition = () => {
 	runVideoFaceDetection(webcamPort, detectFaces);
 }
 
-//execute_faceRecognition()
+exports.execute_faceRecognition()

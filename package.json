@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/arnavn101/DroneController#readme",
   "dependencies": {
+    "ardrone-autonomy": "^0.1.2",
     "restify": "^8.5.1"
   }
 }

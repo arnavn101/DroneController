@@ -18,7 +18,6 @@ exports.runVideoFaceDetection = (src, detectFaces) => grabFrames(src, 1, (frame)
     cv.imwrite('image_found.png',frameResized)
     faceRects.forEach(faceRect => drawBlueRect(frameResized, faceRect));
     console.log("face detected")
-    cv.stop()
   }
   
   cv.imshow('face detection', frameResized);

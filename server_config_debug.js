@@ -16,6 +16,7 @@ const { front } 	  		      = require('./drone_navigation/navigation');
 const { stop } 	  		          = require('./drone_navigation/navigation');
 var restify 					  = require('restify');
 
+
 // Initialize REST Server
 var server = restify.createServer({
   'name': 'ar-drone-server'
@@ -41,48 +42,54 @@ function move_drone(req, res, next){
 
 	var initial_latitude		 = parseFloat(req.query.initial_latitude)
 	var initial_longitude		 = parseFloat(req.query.initial_longitude)
-	var turn_latitudes  		 = [(req.query.turn_latitudes)].map(parseFloat)
-	var turn_longitudes 		 = [(req.query.turn_longitudes)].map(parseFloat)
-	var position_scan_latitudes  = [(req.query.position_scan_latitudes)].map(parseFloat)
-	var position_scan_longitudes = [(req.query.position_scan_longitudes)].map(parseFloat)
-	var turns_degrees            = [(req.query.turns_degrees)].map(parseFloat)
+	var turn_latitudes  		 = (req.query.turn_latitudes).map(parseFloat)
+	var turn_longitudes 		 = (req.query.turn_longitudes).map(parseFloat)
+	var position_scan_latitudes  = (req.query.position_scan_latitudes).map(parseFloat)
+	var position_scan_longitudes = (req.query.position_scan_longitudes).map(parseFloat)
+	var turns_degrees            = (req.query.turns_degrees).map(parseFloat)
 	var initial_altitude		 = (parseInt(req.query.initial_altitude))
 	var normal_speed			 = (parseInt(req.query.normal_speed))
 	var detect_before_after_turn = (req.query.detect_before_after_turn)
 	var number_pairs             = detect_before_after_turn.length
 	var current_coordinate		 = 0.0
-	var i 
-	var battery = 0						
-	client.config('general:navdata_demo', 'FALSE');
-
+	var batteryPercentage = 0
+	var i
+ 						
 
 	// Actual Navigation
-	takeoff()
-	execute_faceRecognition()
-	change_height(initial_altitude)
-
+	//takeoff()
+	//execute_faceRecognition()
+	//change_height(initial_altitude)
+	console.log("Number of pairs : " + number_pairs)
+	console.log(turn_latitudes)
+	console.log(position_scan_latitudes)
 	while(true)
 		
 	{
-		battery+=1
-		if(battery==2)//batteryPercentage() < 45)
+		if(batteryPercentage == 1) //batteryPercentage() < 45)
 
 			{
 				console.log("Current Coordinate : " + current_coordinate)
-				land() // wireless charging possibilites
+				//land() // wireless charging possibilites
 				res.send('OK')
 				break
 			}
 
+		console.log("Battery Percentage : " + batteryPercentage)
 
-		battery += 1
+		batteryPercentage += 1
 
 		var num_scan_pairs			 = 0
 		var num_turn_pairs			 = 0
+		console.log(detect_before_after_turn)
 		
 		for(i = 0; i < (number_pairs-1); i++)
 			
 		{
+			console.log("Num scan pairs: " + num_scan_pairs)
+			console.log("Num turn pairs: " + num_turn_pairs)	
+			console.log("i : " + i)
+			console.log("Detect before turn: " + detect_before_after_turn[i])
 			
 			if (detect_before_after_turn[i] 		== 0)
 
@@ -114,14 +121,16 @@ function move_drone(req, res, next){
 
 				}
 
+				console.log("Computed latitudes : " + computed_latitudes)
+				console.log("Computed longitudes : " + computed_longitudes)
 				var distance_limit 	    	= (retrieve_distance(computed_latitudes, computed_longitudes))
 				console.log("Distance required : " + distance_limit)
 				current_coordinate			= [computed_latitudes[1], computed_longitudes[1]]
-				stopAfter(distance_limit)
-				change_height(0)
-				fullRotation()
-				change_height(initial_altitude)
-				front(normal_speed)
+				//stopAfter(distance_limit)
+				//change_height(0)
+				//fullRotation()
+				//change_height(initial_altitude)
+				//front(normal_speed)
 				num_scan_pairs 				+= 1
 				
 				console.log("Current Coordinate : " + current_coordinate)
@@ -155,15 +164,18 @@ function move_drone(req, res, next){
 					var computed_longitudes = [position_scan_longitudes[num_scan_pairs], turn_longitudes[num_turn_pairs]] 
 
 				}
+				console.log("Computed latitudes : " + computed_latitudes)
+				console.log("Computed longitudes : " + computed_longitudes)
 
 
 				var distance_limit 	    	= (retrieve_distance(computed_latitudes, computed_longitudes))
+
 				console.log("Distance required : " + distance_limit)
-				stopAfter(distance_limit)
-				front(normal_speed)
-				clockwise(turns_degrees[num_turn_pairs])
+
+				//stopAfter(distance_limit)
+				//front(normal_speed)
+				//clockwise(turns_degrees[num_turn_pairs])
 				current_coordinate			= [computed_latitudes[1], computed_longitudes[1]]
-				
 				console.log("Current Coordinate : " + current_coordinate)
 
 				num_turn_pairs 				+= 1
@@ -177,9 +189,9 @@ function move_drone(req, res, next){
 
 }
 
-server.get('/v1/move_drone/', takeoff1);
+server.get('/v1/move_drone/', move_drone);
 
-//curl "http://localhost:8080/v1/move_drone/?initial_latitude=40.657896&initial_longitude=-74.618014&position_scan_latitudes=40.657890&position_scan_longitudes=-74.618007&turn_latitudes=40.657882&turn_longitudes=-74.617996&initial_altitude=3&normal_speed=0.1&detect_before_after_turn=0&detect_before_after_turn=1turns_degrees=90&turns_degrees=90"
+//curl "http://localhost:8080/v1/move_drone/?initial_latitude=40.662622&initial_longitude=-74.554678&position_scan_latitudes=40.662635&position_scan_longitudes=-74.554509&turn_latitudes=40.662653&turn_longitudes=-74.554382&position_scan_latitudes=40.662742&position_scan_longitudes=-74.554406&turn_latitudes=40.662761&turn_longitudes=-74.554415&initial_altitude=1&normal_speed=0.1&detect_before_after_turn=0&detect_before_after_turn=1&detect_before_after_turn=0&detect_before_after_turn=1&turns_degrees=90&turns_degrees=90&turns_degrees=90"
 
 
 

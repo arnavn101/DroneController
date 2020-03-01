@@ -37,7 +37,7 @@ class Image_Classification():
 		print(self.load_as_json(requests.post(f'{self.service_endpoint}/v3/classify/', params=self.params, files = self.files, auth=('apikey', f'{self.api_key}'))))
 
 	def create_classifier(self, classifier_name, file_list):
-		self.zip_folders(file_list)
+		#self.zip_folders(file_list)
 		self.initialize_fileDict(file_list)
 		self.create_classifer_name(classifier_name)
 		print(self.create_request())
@@ -64,5 +64,6 @@ class Image_Classification():
 			directory = os.getcwd()
 			shutil.make_archive(os.path.join(directory, f"{folder}"), 'zip', os.path.join(directory, f"{folder}"))
 
+a = Image_Classification()
 
-
+a.create_classifier("Arnav", ["a.zip"])

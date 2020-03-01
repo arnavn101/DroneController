@@ -8,7 +8,7 @@ var ctrl    = new autonomy.Controller(client, {debug: false});
 client.config('general:navdata_demo', 'FALSE');
 
 // enable navigaton data for client
-
+var navDataHook = null
 function setNavDataHook(hook) {
   if (navDataHook) {
     client.removeListener('navdata', navDataHook);
@@ -19,7 +19,6 @@ function setNavDataHook(hook) {
     navDataHook = hook;
   }
 }
-
 
 // Utilizes odometry tracker
  
@@ -34,7 +33,7 @@ var Odometry = function(client) {
 
 
 // Starts odometry.
- 
+
 Odometry.prototype.start = function() {
   if (this.hook) {
     this.stop();
@@ -52,6 +51,7 @@ Odometry.prototype.start = function() {
 };
 
 
+
 // Stop odometry
 
 Odometry.prototype.stop = function() {
@@ -63,7 +63,7 @@ Odometry.prototype.stop = function() {
 // Event handling
 Odometry.prototype.handleNavData_ = function(navData) {
   if (navData.demo) {
-    var translation = navData.demo.client.camera.translation;
+    var translation = navData.demo.drone.camera.translation;
     if (this.start_x === null || this.start_y === null) {
       this.start_x = translation.x;
       this.start_y = translation.y;
@@ -98,10 +98,9 @@ exports.batteryPercentage = () => {
 });
 }
 
-exports.takeoff = () => { //do this for all methods
+exports.takeoff = () => { 
   client.takeoff();
 }
-
 
 exports.land = () => {
   client.land();
@@ -175,12 +174,14 @@ exports.stopAfter = (distance_mm) => {
 
 exports.fullRotation = () => {
   setTimeout(function(){}, 15000);
-  clockwise(90)
+  exports.clockwise(90)
   setTimeout(function(){}, 15000);
-  clockwise(90)
+  exports.clockwise(90)
   setTimeout(function(){}, 15000);
-  clockwise(90)
+  exports.clockwise(90)
   setTimeout(function(){}, 15000);
-  clockwise(90)
+  exports.clockwise(90)
 }
 
+exports.takeoff()
+exports.land()
